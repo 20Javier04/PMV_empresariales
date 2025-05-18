@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
-import './Login.css';
+import { useNavigate } from 'react-router-dom';
+import usuarios from '../data/usuarios'; 
+import '../stiles/Login.css';
 
-function Login() {
+function Login({ setIsAuthenticated }) {
   const [idEmpleado, setIdEmpleado] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Aquí se puede simular una validación simple
-    if (idEmpleado === '12345' && password === 'admin') {
-      alert('Inicio de sesión exitoso');
-      // Aquí iría una redirección a otra pantalla
+    const usuario = usuarios.find(
+      (u) => u.id === idEmpleado && u.password === password
+    );
+
+    if (usuario) {
+      setIsAuthenticated(true);
+      localStorage.setItem('usuarioActual', JSON.stringify(usuario));
+      navigate('/home');
     } else {
       alert('ID o contraseña incorrectos');
     }
@@ -22,7 +29,7 @@ function Login() {
       <form className="login-form" onSubmit={handleLogin}>
         <h2 className="login-title">Turnify</h2>
 
-        <label htmlFor="idEmpleado">Rut de Empleado</label>
+        <label htmlFor="idEmpleado">RUT de Empleado</label>
         <input
           type="text"
           id="idEmpleado"
